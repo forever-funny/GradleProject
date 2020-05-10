@@ -1,0 +1,35 @@
+plugins {
+    id 'java'
+}
+
+group 'com.googler'
+
+repositories {
+    mavenCentral()
+    maven { url 'http://maven.aliyun.com/nexus/content/groups/public/' }
+}
+
+dependencies {
+    testCompile group: 'junit', name: 'junit', version: '4.12'
+    compile group: 'ch.qos.logback', name: 'logback-classic', version: '1.2.3'
+    compile group: 'com.alibaba', name: 'fastjson', version: '1.2.68'
+}
+
+// 防止不同平台(windows or macos)打包出现中文乱码问题
+compileJava.options.encoding = 'UTF-8'
+compileTestJava.options.encoding = 'UTF-8'
+
+// 打jar包必备内容
+jar {
+    manifestContentCharset 'utf-8'
+    metadataCharset 'utf-8'
+    manifest {
+        // manifest 文件声明主程序入口
+        attributes "Main-Class": "com.googler.First"
+    }
+    from {
+        configurations.compile.collect {
+            it.isDirectory() ? it : zipTree(it)
+        }
+    }
+}
